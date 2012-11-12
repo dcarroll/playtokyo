@@ -60,73 +60,59 @@ public class SignedRequest {
 
     public static CanvasRequest verifyAndDecode(String input, String secret) throws SecurityException {
 
-        String[] split = getParts(input);
+        //String[] split = getParts(input);
 
-        String encodedSig = split[0];
-        String encodedEnvelope = split[1];
+        //String encodedSig = split[0];
+        //String encodedEnvelope = split[1];
 
-        CanvasRequest canvasRequest = getCanvasRequest(encodedEnvelope);
+        // Deserialize our request string into a concrete CanvasRequest object
+        CanvasRequest canvasRequest = getCanvasRequest(input, secret);
         
-        String algorithm; 
-        algorithm = canvasRequest.getAlgorithm() == null ? "HMACSHA256" : canvasRequest.getAlgorithm();
+        // Pull out the algorithm, if none specified then use HMACSHA256
+        //String algorithm = canvasRequest.getAlgorithm() == null ? "HMACSHA256" : canvasRequest.getAlgorithm();
 
-        verify(secret, algorithm, encodedEnvelope, encodedSig);
+        // Verify that the request has not been tampered with using the app secret
+        //verify(secret, algorithm, encodedEnvelope, encodedSig);
 
-        // If we got this far, then the request was not tampered with.
-        // return the request as a Java object
+        // If we got this far, then the request was not tampered with return the request as a Java object
         return canvasRequest;
-    }
-
-    private static CanvasRequest getCanvasRequest(String json) {
-        // Deserialize the json body
-        String json_envelope = new String(new Base64(true).decode(json));
-        Gson g = new Gson();
-        JsonParser jp = new JsonParser();
-        JsonElement je = jp.parse(json_envelope);
-        JsonObject canvRequst = je.getAsJsonObject();
-        JsonObject context = canvRequst.getAsJsonObject("context");
-        JsonObject otherContext = context.getAsJsonObject("user");
-        
-        CanvasRequest canvasRequest = g.fromJson(canvRequst, CanvasRequest.class) ;
-        canvasRequest.setContext(g.fromJson(context, CanvasContext.class));
-        canvasRequest.getContext().setUserContext(g.fromJson(otherContext, CanvasUserContext.class));
-        otherContext = context.getAsJsonObject("links");
-        canvasRequest.getContext().setLinkContext(g.fromJson(otherContext, CanvasLinkContext.class));
-        otherContext = context.getAsJsonObject("organization");
-        canvasRequest.getContext().setOrganizationContext(g.fromJson(otherContext, CanvasOrganizationContext.class));
-        otherContext = context.getAsJsonObject("environment");
-        canvasRequest.getContext().setEnvironmentContext(g.fromJson(otherContext, CanvasEnvironmentContext.class));
-    	return canvasRequest;
     }
 
     public static String verifyAndDecodeAsJson(String input, String secret) throws SecurityException {
 
+        // Deserialize our request string into a concrete CanvasRequest object
+        CanvasRequest canvasRequest = getCanvasRequest(input, secret);
+
+        // Pull out the algorithm, if none specified then use HMACSHA256
+        //String algorithm = canvasRequest.getAlgorithm() == null ? "HMACSHA256" : canvasRequest.getAlgorithm();
+
+        // Verify that the request has not been tampered with using the app secret
+        //verify(secret, algorithm, encodedEnvelope, encodedSig);
+
+        // If we got this far, then the request was not tampered with.
+        //return new String(new Base64(true).decode(encodedEnvelope));
+        return canvasRequest.getJsonRequest();
+    }
+
+    private static CanvasRequest getCanvasRequest(String input, String secret) throws SecurityException {
         String[] split = getParts(input);
 
         String encodedSig = split[0];
         String encodedEnvelope = split[1];
 
-        CanvasRequest canvasRequest = getCanvasRequest(encodedEnvelope);
+        // Deserialize our request string into a concrete CanvasRequest object
+        CanvasRequest canvasRequest = new CanvasRequest();
+        canvasRequest.setJsonRequest(encodedEnvelope);
 
-        String json_envelope = new String(new Base64(true).decode(encodedEnvelope));
-        Gson g = new Gson();
-        System.out.println("JSON Envelope in 'verifyAndDecodeAsJson' method \n" + json_envelope);
-        HashMap<String,Object> o = new HashMap<String, Object>(); // = mapper.readValue(json_envelope, typeRef);
-        o = g.fromJson(json_envelope, o.getClass());
-
+        // Pull out the algorithm, if none specified then use HMACSHA256
         String algorithm = canvasRequest.getAlgorithm() == null ? "HMACSHA256" : canvasRequest.getAlgorithm();
 
+        // Verify that the request has not been tampered with using the app secret
         verify(secret, algorithm, encodedEnvelope, encodedSig);
-
-        // If we got this far, then the request was not tampered with.
-        // return the request as a JSON string.
-        if (o == null) {
-        	System.out.println("For some reason, my hash map is null.");
-        }
-        String outp = json_envelope;
-        return outp;
+        
+    	return canvasRequest;
     }
-
+    
     private static String[] getParts(String input) {
 
         if (input == null || input.indexOf(".") <= 0) {

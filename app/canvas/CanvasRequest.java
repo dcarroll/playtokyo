@@ -29,6 +29,13 @@ package canvas;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 //import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
 /**
@@ -50,6 +57,48 @@ public class CanvasRequest {
     private String  clientId;
     private String  instanceUrl;
     private CanvasContext canvasContext;
+    private String jsonRequest;
+    
+    
+    private void processJsonRequest(String json) {
+        // Deserialize the json body
+    	this.jsonRequest = new String(new Base64(true).decode(json));
+        Gson g = new Gson();
+        JsonParser jp = new JsonParser();
+        JsonElement je = jp.parse(jsonRequest);
+        JsonObject canvRequst = je.getAsJsonObject();
+        JsonObject context = canvRequst.getAsJsonObject("context");
+        JsonObject otherContext = context.getAsJsonObject("user");
+        
+        CanvasRequest canvasRequest = g.fromJson(canvRequst, CanvasRequest.class) ;
+        this.algorithm = canvasRequest.algorithm;
+        this.issuedAt = canvasRequest.issuedAt;
+        this.userId = canvasRequest.userId;
+        this.oauthToken = canvasRequest.oauthToken;
+        this.params = canvasRequest.params;
+        this.clientId = canvasRequest.clientId;
+        this.instanceUrl = canvasRequest.instanceUrl;
+        
+        this.setContext(g.fromJson(context, CanvasContext.class));
+        this.getContext().setUserContext(g.fromJson(otherContext, CanvasUserContext.class));
+        otherContext = context.getAsJsonObject("links");
+        this.getContext().setLinkContext(g.fromJson(otherContext, CanvasLinkContext.class));
+        otherContext = context.getAsJsonObject("organization");
+        this.getContext().setOrganizationContext(g.fromJson(otherContext, CanvasOrganizationContext.class));
+        otherContext = context.getAsJsonObject("environment");
+        this.getContext().setEnvironmentContext(g.fromJson(otherContext, CanvasEnvironmentContext.class));
+    }
+    
+    /**
+     * The Canvas request as a jsonString
+     */
+    public String getJsonRequest() {
+        return jsonRequest;
+    }
+
+    public void setJsonRequest(String jsonRequest) {
+    	processJsonRequest(jsonRequest);
+    }
 
     /**
      * The algorithm used to sign the request. typically HMAC-SHA256
