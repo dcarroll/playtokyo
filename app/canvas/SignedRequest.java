@@ -109,8 +109,13 @@ public class SignedRequest {
 
         HashMap<String,Object> o = new HashMap<String, Object>(); // = mapper.readValue(json_envelope, typeRef);
         o = g.fromJson(json_envelope, o.getClass());
-            
-        algorithm = (String)o.get("algorithm");
+
+        JsonParser jp = new JsonParser();
+        JsonElement je = jp.parse(json_envelope);
+        JsonObject canvRequst = je.getAsJsonObject();
+        CanvasRequest canvasRequest = g.fromJson(canvRequst, CanvasRequest.class) ;
+
+        algorithm = canvasRequest.getAlgorithm() == null ? "HMACSHA256" : canvasRequest.getAlgorithm();
 
         verify(secret, algorithm, encodedEnvelope, encodedSig);
 
