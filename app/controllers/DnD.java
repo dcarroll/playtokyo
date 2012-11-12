@@ -49,7 +49,7 @@ public class DnD extends Controller {
             return null;
         }
         String yourConsumerSecret=System.getenv("CANVAS_CONSUMER_SECRET");
-        yourConsumerSecret = "6820991197818332216";
+        //yourConsumerSecret = "6820991197818332216";
         SignedRequest.verifyAndDecode(signedRequest, yourConsumerSecret);
         String signedRequestJson = SignedRequest.verifyAndDecodeAsJson(signedRequest, yourConsumerSecret);
         System.out.println("JSON Signed Request: \n" + signedRequestJson);
