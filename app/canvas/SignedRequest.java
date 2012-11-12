@@ -110,7 +110,7 @@ public class SignedRequest {
 
         String json_envelope = new String(new Base64(true).decode(encodedEnvelope));
         Gson g = new Gson();
-
+        System.out.println("JSON Envelope in 'verifyAndDecodeAsJson' method \n" + json_envelope);
         HashMap<String,Object> o = new HashMap<String, Object>(); // = mapper.readValue(json_envelope, typeRef);
         o = g.fromJson(json_envelope, o.getClass());
 
@@ -120,6 +120,9 @@ public class SignedRequest {
 
         // If we got this far, then the request was not tampered with.
         // return the request as a JSON string.
+        if (o == null) {
+        	System.out.println("For some reason, my hash map is null.");
+        }
         String outp = g.toJson(o);// json_envelope;
         return outp;
     }

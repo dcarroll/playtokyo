@@ -26,6 +26,9 @@ public class DnD extends Controller {
         String yourConsumerSecret=System.getenv("CANVAS_CONSUMER_SECRET");
     	CanvasRequest cReq = SignedRequest.verifyAndDecode(params.get("signed_request"), yourConsumerSecret);
     	//String jsonQueryResult = doAQuery(cReq);
+        if (cReq == null) {
+        	return;
+        }
     	handleSignedRequest();
     	String signedRequest = handleSignedRequest();
     	//JsonArray records = (new JsonParser()).parse(jsonQueryResult).getAsJsonObject().getAsJsonArray("records");
