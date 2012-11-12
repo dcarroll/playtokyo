@@ -17,8 +17,10 @@ POST       /dnd                                    DnD.index
 # Ignore favicon requests
 GET        /favicon.ico                            404
 
+
 # Map static resources from the /app/public folder to the /public path
 GET        /public/                                staticDir:public
+GET        /public/images/           			   staticDir:public/images
 
 # Catch all
 *           /{controller}/{action}                 {controller}.{action}
