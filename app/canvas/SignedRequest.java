@@ -123,7 +123,7 @@ public class SignedRequest {
         if (o == null) {
         	System.out.println("For some reason, my hash map is null.");
         }
-        String outp = g.toJson(o);// json_envelope;
+        String outp = json_envelope;
         return outp;
     }
 
