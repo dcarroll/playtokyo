@@ -32,7 +32,8 @@ public class DnD extends Controller {
 
     	// Cause the index.html page to be rendered passing in the requet json string for js use
     	// and the records that came back from the web service call.
-    	render(cReq.getJsonRequest(), records);
+    	String signedRequest = cReq.getJsonRequest();
+    	render(signedRequest, records);
     }
     
     private static String doAQuery(CanvasRequest cReq) {
