@@ -121,7 +121,7 @@ public class SignedRequest {
 
         // If we got this far, then the request was not tampered with.
         // return the request as a JSON string.
-        String outp = g.toJson(o).toString();
+        String outp = json_envelope;
         return outp;
     }
 

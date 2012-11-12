@@ -18,7 +18,6 @@ var accounts;
 
 Sfdc.canvas(function() {
 	var sr = JSON.parse(unescapeHTML('${signedRequest}'));
-	//accounts = JSON.parse(unescapeHTML('${jsonQueryResult}').records;
 	// Save the token
 	Sfdc.canvas.oauth.token(sr.oauthToken);
  	var photoUri = sr.context.user.profileThumbnailUrl +  "?oauth_token=" + sr.oauthToken;
