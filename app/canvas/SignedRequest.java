@@ -86,9 +86,7 @@ public class SignedRequest {
         
         
         String algorithm; 
-        	//canvasRequest = g.fromJson(json_envelope, CanvasRequest.class);
-            //canvasRequest = reader.readValue(json_envelope);
-            algorithm = canvasRequest.getAlgorithm() == null ? "HMACSHA256" : canvasRequest.getAlgorithm();
+        algorithm = canvasRequest.getAlgorithm() == null ? "HMACSHA256" : canvasRequest.getAlgorithm();
 
         verify(secret, algorithm, encodedEnvelope, encodedSig);
 
@@ -108,21 +106,11 @@ public class SignedRequest {
         String json_envelope = new String(new Base64(true).decode(encodedEnvelope));
         Gson g = new Gson();
         String algorithm;
-        //StringWriter writer;
-        //TypeReference<HashMap<String,Object>> typeRef
-        //        = new TypeReference<HashMap<String, Object>>() { };
-        //try {
-//            HashMap<String,Object> o = mapper.readValue(json_envelope, typeRef);
-            HashMap<String,Object> o = new HashMap<String, Object>(); // = mapper.readValue(json_envelope, typeRef);
-        	o = g.fromJson(json_envelope, o.getClass());
-            //writer = new StringWriter();
+
+        HashMap<String,Object> o = new HashMap<String, Object>(); // = mapper.readValue(json_envelope, typeRef);
+        o = g.fromJson(json_envelope, o.getClass());
             
-            //mapper.writeValue(writer, o);
-            algorithm = (String)o.get("algorithm");
-        //} catch (IOException e) {
-        //    throw new SecurityException(String.format("Error [%s] deserializing JSON to Object [%s]", e.getMessage(),
-        //            typeRef.getClass().getName()), e);
-        //}
+        algorithm = (String)o.get("algorithm");
 
         verify(secret, algorithm, encodedEnvelope, encodedSig);
 
@@ -130,7 +118,6 @@ public class SignedRequest {
         // return the request as a JSON string.
         String outp = g.toJson(o).toString();
         return outp;
-//        return writer.toString();
     }
 
     private static String[] getParts(String input) {

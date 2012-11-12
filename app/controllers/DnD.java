@@ -23,7 +23,8 @@ public class DnD extends Controller {
     	for (String aParam : params.all().keySet()) {
     		System.out.println(params.get(aParam));
     	}
-    	CanvasRequest cReq = SignedRequest.verifyAndDecode(params.get("signed_request"), "6820991197818332216");
+        String yourConsumerSecret=System.getenv("CANVAS_CONSUMER_SECRET");
+    	CanvasRequest cReq = SignedRequest.verifyAndDecode(params.get("signed_request"), yourConsumerSecret);
     	String jsonQueryResult = doAQuery(cReq);
     	handleSignedRequest();
     	String signedRequest = handleSignedRequest();
