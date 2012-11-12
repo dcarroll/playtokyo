@@ -10,6 +10,10 @@ GET        /people                                 People.index
 POST       /people                                 People.create
 DELETE     /people/{id}                            People.delete
 
+# DnD
+GET		   /dnd									   DnD.index
+POST       /dnd                                    DnD.index
+
 # Ignore favicon requests
 GET        /favicon.ico                            404
 
